@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Number Management Service</title>
+</head>
+<body>
+	<h1>Number Management Service</h1>
+	<form id="numbers-form">
+		<label for="url1">URL 1:</label>
+		<input type="text" id="url1" name="url" value="http://104.211.219.98/numbers/primes"><br>
+		<label for="url2">URL 2:</label>
+		<input type="text" id="url2" name="url" value="http://104.211.219.98/numbers/fibo"><br>
+        <label for="url2">URL 3:</label>
+		<input type="text" id="url2" name="url" value="http://104.211.219.98/numbers/odd"><br>
+        <label for="url2">URL 4:</label>
+		<input type="text" id="url2" name="url" value="http://104.211.219.98/numbers/rand"><br>
+		<button type="submit">Get Numbers</button>
+	</form>
+	<p id="result"></p>
+	<script>
+		document.getElementById("numbers-form").addEventListener("submit", function(event) {
+			event.preventDefault();
+			var urlInputs = document.getElementsByName("url");
+			var urls = [];
+			for (var i = 0; i < urlInputs.length; i++) {
+				urls.push(urlInputs[i].value);
+			}
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/numbers?url=" + encodeURIComponent(urls.join("&url=")), true);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var response = JSON.parse(xhr.responseText);
+					var resultEl = document.getElementById("result");
+					resultEl.innerHTML = "Numbers: " + response.numbers.join(", ");
+				}
+			};
+			xhr.send();
+		});
+	</script>
+</body>
+</html>
